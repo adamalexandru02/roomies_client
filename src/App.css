@@ -1,0 +1,143 @@
+@font-face {
+  font-family: 'SingleDay';
+  src: url(assets/fonts/SingleDay-Regular.ttf);
+}
+
+@keyframes skewit {
+  0% {
+    transform: skew(0,0);
+  }
+
+  50% {
+    transform: skew(1deg, 1deg);
+  }
+
+  100% {
+    transform: skew(0,0);
+  }
+}
+body {
+  background-color: #fff;
+  font-family: 'SingleDay';
+  color: #000;
+  overflow: hidden;
+}
+p,h1,h2,h3 {
+  padding: 0!important;
+  margin-top: 0!important;
+}
+#root {
+    margin: 0 auto;
+    width: 100vw;
+    padding: 20px;
+    height: auto;
+    overflow: scroll;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 {
+  font-size: 48px;
+}
+
+h2 {
+  font-size: 26px;
+}
+
+p {
+  font-size: 24px;
+}
+
+input {
+  display: flex;
+  padding: 10px;
+  border-image-source: url('assets/sketch_borders.png');
+  border-image-slice: 60;
+  border-image-width: 10px;
+  border-image-outset: 0;
+  background: transparent
+}
+
+
+/* <remove_browser_behaviour> */
+input,
+textarea,
+select,
+button {
+    color: #000;
+  font-family: 'SingleDay';
+  font-size: 24px; /* prevents Safari zoom */
+  text-align: center;
+}
+input:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* </remove_browser_behaviour> */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  max-width: calc(100vw - 120px);
+  border-image-source: url('assets/sketch_border2.png');
+  border-image-slice: 45;        /* how much to slice inward from each edge */
+  border-image-width: 15px;      /* thickness of the border */
+  border-image-outset: 0;        /* optional offset */
+  border-image-repeat: stretch;  /* or round, repeat, space */
+  animation: skewit 2s ease-in infinite;
+}
+
+.button {
+  cursor: pointer;
+  display: flex;
+  padding: 10px;
+  border-image-source: url('assets/sketch_borders.png');
+  border-image-slice: 60;
+  border-image-width: 10px;
+  border-image-outset: 0;
+  font-size: 32px;
+  justify-content: center;
+  border-image-repeat: stretch;
+  animation: skewit 2s ease-in infinite;
+}
+
+.button:hover {
+  animation: skewit 0.5s ease-in infinite;
+  transform: scale(3);
+
+}
+.read-the-docs {
+  color: #888;
+}
+
+.canvas {
+  position: relative;
+}
+.undo {
+  background-image: url('assets/undo.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
