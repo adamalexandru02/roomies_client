@@ -1,12 +1,14 @@
 import { create } from "zustand";
 import * as Nakama from "@heroiclabs/nakama-js";
 
+import { gameStore } from "../games/Desen/store/gameStore";
+
 export const usePlayerStore = create((set, get) => ({
   client: null,
   session: null,
   socket: null,
   matchId: null,
-  roomCode: "",
+  roomCode: "1111",
   messages: [],
   assignedTitle: "",
   roundOverTrigger: 0,
@@ -18,7 +20,7 @@ export const usePlayerStore = create((set, get) => ({
 
 
   setScreen: (step) => set({screen: step, loading: false}),
-  setRoomCode: (code) => set({ roomCode: code }),
+  setRoomCode: (code) => set({ roomCode: "1111" }),
 
   addMessage: (msg) =>
     set((state) => ({ messages: [...state.messages, msg] })),
@@ -31,7 +33,7 @@ export const usePlayerStore = create((set, get) => ({
 
     const client = new Nakama.Client(
       "jocuri-server-parola",
-      "192.168.1.109",
+      "172.20.10.10",
       "7350",
       false
     );
@@ -55,34 +57,17 @@ export const usePlayerStore = create((set, get) => ({
         get().addMessage(msg);
         set({loading: false});
 
-        if (msg.type === "game_started") {
-          const myId = get().session.user_id;
-          const myTitle = msg.content.titles[myId];
-          set({ assignedTitle: myTitle, screen: 3});
+        switch(msg.type) {
+          case "user_data": 
+            set((state) => ({
+              users: { ...state.users, [msg.content.user_id]: msg.content }
+            }));
+            break;
+          case "pick_game":
+            set({screen: 2})
+            break;
+          default: console.log("nu exista", matchData); gameStore.getState().handleMessage(matchData); break;
         }
-
-        if (msg.type === "user_data") {
-          set((state) => ({
-            users: { ...state.users, [msg.content.user_id]: msg.content }
-          }));
-        }
-
-        if (msg.type === "time_over") {
-              set({ roundOverTrigger: get().roundOverTrigger + 1 });
-        }
-
-        if (msg.type === "create_titles") {
-          set({screen: 5, owner: msg.owner})
-        }
-
-        if (msg.type === "start_vote") {
-          set({screen: 6, drawingTitles: msg.drawingTitles})
-        }
-
-        if (msg.type === "displaying_score") {
-          set({screen: 7, drawingTitles: msg.drawingTitles})
-        }
-
 
       } catch (err) {
         console.error("Parse error:", err);
@@ -109,7 +94,7 @@ export const usePlayerStore = create((set, get) => ({
   },
 
   // 🎮 Join room
-  joinRoom: async () => {
+  joinRoom: async (name) => {
     const { client, session, socket, roomCode } = get();
     if (!client || !session || !socket) return;
 
@@ -119,7 +104,25 @@ export const usePlayerStore = create((set, get) => ({
       });
 
       const match = await socket.joinMatch(rpc.payload.match_id);
-      set({ matchId: match.match_id });
+
+      if (match.match_id) {
+        console.log("ha?!");
+        setTimeout(() => {
+          get().send({
+            type: "user_data",
+            content: {
+              user_id: session.user_id,
+              nickname: name,
+            }
+          });
+          set({loading: false})
+          
+        }, 1000);
+      
+        set({ matchId: match.match_id, screen: 1, loading: false });
+      
+      }
+      
 
       return match.match_id;
     } catch (err) {
@@ -128,3 +131,9 @@ export const usePlayerStore = create((set, get) => ({
     }
   }
 }));
+
+export const playerStore = {
+    getState: usePlayerStore.getState,
+    setState: usePlayerStore.setState,
+    subscribe: usePlayerStore.subscribe,
+};

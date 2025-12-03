@@ -1,11 +1,11 @@
 {
-  "name": "Wizard Party Game",
-  "short_name": "WizardGame",
+  "name": "Roomies",
+  "short_name": "Roomies",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0d0d1a",
+  "background_color": "#000",
   "theme_color": "#0d0d1a",
-  "orientation": "portrait",
+  "orientation": "#f26223",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",

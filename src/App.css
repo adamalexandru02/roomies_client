@@ -1,62 +1,81 @@
 @font-face {
-  font-family: 'SingleDay';
-  src: url(assets/fonts/SingleDay-Regular.ttf);
+  font-family: 'Nunito-Bold';
+  src: url(assets/fonts/Nunito-Bold.ttf);
+}
+@font-face {
+  font-family: 'Nunito-Extra-Bold';
+  src: url(assets/fonts/Nunito-ExtraBold.ttf);
+}
+@font-face {
+  font-family: 'Nunito-Black';
+  src: url(assets/fonts/Nunito-Black.ttf);
 }
 
-@keyframes skewit {
-  0% {
-    transform: skew(0,0);
-  }
-
-  50% {
-    transform: skew(1deg, 1deg);
-  }
-
-  100% {
-    transform: skew(0,0);
-  }
-}
 body {
-  background-color: #fff;
-  font-family: 'SingleDay';
-  color: #000;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
+  background-color: #fff;
+  background-color: #150f0c;
+  font-family: 'Nunito-Bold';
+  color: #ffffff;
+    -webkit-user-select: none; /* Safari/Chrome */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+  user-select: none;         /* Standard */
+
 }
+
 p,h1,h2,h3 {
   padding: 0!important;
   margin-top: 0!important;
 }
+
 #root {
     margin: 0 auto;
     width: 100vw;
-    padding: 20px;
+    padding: 40px;
     height: auto;
-    overflow: scroll;
+    overflow: auto;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
+
+
+
+
 h1 {
-  font-size: 48px;
+  font-size: 28px;
+  font-family: 'Nunito-Black';
+
 }
 
 h2 {
-  font-size: 26px;
+  font-size: 20px;
+  font-family: 'Nunito-Black';
+
 }
 
 p {
-  font-size: 24px;
+  font-size: 16px;
+  font-family: 'Nunito-Black';
+
 }
 
 input {
   display: flex;
-  padding: 10px;
-  border-image-source: url('assets/sketch_borders.png');
-  border-image-slice: 60;
-  border-image-width: 10px;
-  border-image-outset: 0;
+  width: calc(100% - 40px);
+  padding: 10px 20px!important;
+  font-family: 'Nunito-Bold';
+  border: none;
+  margin-bottom: 20px;;
+  border-radius: 10px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+  display: block;
   background: transparent
 }
 
@@ -66,9 +85,8 @@ input,
 textarea,
 select,
 button {
-    color: #000;
-  font-family: 'SingleDay';
-  font-size: 24px; /* prevents Safari zoom */
+  color: #fff;
+  font-size: 18px; /* prevents Safari zoom */
   text-align: center;
 }
 input:focus,
@@ -91,53 +109,43 @@ input[type=number] {
 
 /* </remove_browser_behaviour> */
 
-.card {
-  display: flex;
-  flex-direction: column;
-  padding: 40px;
-  max-width: calc(100vw - 120px);
-  border-image-source: url('assets/sketch_border2.png');
-  border-image-slice: 45;        /* how much to slice inward from each edge */
-  border-image-width: 15px;      /* thickness of the border */
-  border-image-outset: 0;        /* optional offset */
-  border-image-repeat: stretch;  /* or round, repeat, space */
-  animation: skewit 2s ease-in infinite;
+.logo {
+  width: 60vw;
+  height: 10vh;
+  display: block;
+  background: url("assets/roomies_logo.png") no-repeat center center;
+  background-size: contain;
+  margin-bottom: 20px;
 }
 
-.button {
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  background: #1e1713;
+  transform: translate(0, 0);
+  box-shadow: 0 20px 20px rgba(0, 0, 0, 0.5);
+  border-radius: 40px;
+}
+
+.main-button {
   cursor: pointer;
   display: flex;
   padding: 10px;
-  border-image-source: url('assets/sketch_borders.png');
-  border-image-slice: 60;
-  border-image-width: 10px;
-  border-image-outset: 0;
-  font-size: 32px;
+  width: calc(100% - 20px);
+  border: 2px solid #ff773d;
+  background-color: #f26223;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 10px;
   justify-content: center;
-  border-image-repeat: stretch;
-  animation: skewit 2s ease-in infinite;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  font-family: 'Nunito-Black';
 }
 
-.button:hover {
-  animation: skewit 0.5s ease-in infinite;
-  transform: scale(3);
-
-}
-.read-the-docs {
-  color: #888;
+.main-button:hover {
+  box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.5);
+  border: 2px solid #1f0f08;
 }
 
-.canvas {
-  position: relative;
-}
-.undo {
-  background-image: url('assets/undo.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center center;
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  top: 0;
-  right: 0;
-}
