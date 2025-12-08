@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import CanvasDraw from "react-canvas-draw";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 
 import { useGameStore } from "./store/gameStore";
 import "./Desen.css";
 import { usePlayerStore } from "../../store/playerStore";
 
-function uploadImage(dataUrl, key,  client, session) {
+function uploadImage(dataUrl, key, client, session) {
   const data = {
     collection: "images",
     key,
@@ -37,10 +36,14 @@ const Desen = () => {
     case 2:
       return <PickTitle />;
     case 3:
+      return <WaitingForOthersTwo/>;
+    case 4:
       return <VoteTitle />;
-    case 4: 
+    case 5:
+      return <WaitingForOthersTwo/>;
+    case 6: 
       return <Score />;
-    case 5: 
+    case 7: 
       return <Restart />;
     default:
       return null;
@@ -142,10 +145,11 @@ const WaitingForOthers = () => {
 
 const PickTitle = () => {
   const [ pickedTitle, setPickedTitle ] = useState('');
-  const { owner } = useGameStore();
+  const { owner, setScreen } = useGameStore();
   const { session, send } = usePlayerStore();
 
   const submit = () => {
+    setScreen(3)
     send({
       type: 'set_title',
       content: {
@@ -184,10 +188,27 @@ const PickTitle = () => {
   );
 };
 
+const WaitingForOthersTwo = () => {
+  return (
+    <div className="card">
+      <h1>Asteptam...</h1>
+      <p>Sa vedem ce cred si ceilalti despre desenul asta reusit</p>
+      <p>Asteptam sa sfarseasca toata lumea...</p>
+    </div>
+  );
+};
+
 const VoteTitle = () => {
-  const { drawingTitles, owner } = useGameStore();
+  const { drawingTitles, owner, setScreen } = useGameStore();
   const { session, send } = usePlayerStore();
+
+  const shuffledTitles = useMemo(() => {
+    console.log("ha?>!", drawingTitles)
+    return [...drawingTitles].filter(u => u.owner !== session.user_id).sort(() => Math.random() - 0.5);
+  }, [drawingTitles]);
+
   const submit = (title) => {
+    setScreen(5)
     send({
       type: 'vote_title',
       content: {
@@ -213,13 +234,23 @@ const VoteTitle = () => {
     <div className="card">
       <h1>Sa Desenam</h1>
       <p>Care crezi ca este titlul initial?</p>
-      {drawingTitles.map((title) => {
+      {shuffledTitles.map((title) => {
         return (
         <div key={title.title} className="button" onClick={() => submit(title.title)}>
             {title.title}
         </div> 
         )
       })}
+    </div>
+  );
+};
+
+const WaitingForOthersThree = () => {
+  return (
+    <div className="card">
+      <h1>Asteptam...</h1>
+      <p>Sa vedem ce cred si ceilalti despre desenul asta reusit</p>
+      <p>Asteptam sa sfarseasca toata lumea...</p>
     </div>
   );
 };

@@ -47,13 +47,13 @@ export const useGameStore = create((set, get) => ({
         set({screen: 2, owner: msg.owner})
       break;
       case "start_vote":
-        set({screen: 3, drawingTitles: msg.drawingTitles})
-      break;
-      case "displaying_score":
         set({screen: 4, drawingTitles: msg.drawingTitles})
       break;
+      case "displaying_score":
+        set({screen: 6, drawingTitles: msg.drawingTitles})
+      break;
       case "check_restart":
-        set({screen: 5})
+        set({screen: 7})
       break;
     }
   }

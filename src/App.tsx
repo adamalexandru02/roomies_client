@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import CanvasDraw from "react-canvas-draw";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 
 import { usePlayerStore } from "./store/playerStore";
 import "./App.css";
 import Desen from "./games/Desen/Desen";
-
+import Header from "./components/Header";
 
 const App = () => {
   const {
@@ -22,21 +21,23 @@ const App = () => {
   }, []);
 
   if(loading && screen !== 3) {
-    return (<p>Loading...</p>)
+    return (
+      <>
+        <Header/>
+        <p>Loading...</p>
+      </>
+    )
   }
-  switch (screen) {
-    case 0:
-      return <Connect />;
-    case 1:
-      return <Waiting />;
-    case 2: 
-      return <PickingGame />;
-    case 3:
-      return <Game />;
-
-    default:
-      return null;
-  }
+  return (
+    <>
+      <Header/>
+      {screen === 0  && <Connect />}
+      {screen === 1 && <Waiting />}
+      {screen === 2 && <PickingGame />}
+      {screen === 3 && <Game />}
+  
+    </>
+  );
 };
 
 const CustomizedCanvas = ({ canvasRef }) => {
