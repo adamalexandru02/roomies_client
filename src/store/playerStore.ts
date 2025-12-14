@@ -117,6 +117,15 @@ export const usePlayerStore = create((set, get) => ({
             });
             break;
             
+          case "game_state_sync":
+            console.log("[CLIENT] Syncing game state from host:", msg.content);
+            set({
+              game: msg.content.game,
+              screen: msg.content.screen || get().screen,
+              loading: false
+            });
+            break;
+            
           default: 
             // Forward to game-specific handlers
             const currentGame = get().game;
