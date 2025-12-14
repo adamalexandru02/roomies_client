@@ -5,19 +5,25 @@ import { gameStore as desenStore } from '../games/Desen/store/gameStore';
 import { gameStore as dannegruStore } from '../games/Dannegru/store/gameStore';
 
 export const usePlayerStore = create((set, get) => ({
+  // Connection state
   client: null,
   session: null,
   socket: null,
   matchId: null,
   roomCode: "1111",
+  
+  // UI state
+  screen: 0,
+  loading: false,
+  game: null,
+  
+  // Game state
   messages: [],
   assignedTitle: "",
   roundOverTrigger: 0,
   users: {},
-  screen: 0,
   owner: null,
   drawingTitles: [],
-  loading: false,
 
 
   setScreen: (step) => set({screen: step, loading: false}),
@@ -54,26 +60,35 @@ export const usePlayerStore = create((set, get) => ({
         const json = new TextDecoder().decode(matchData.data);
         const msg = JSON.parse(json);
 
-        console.log("📩 Received:", msg)
+        console.log("📩 [CLIENT] Received message:", msg.type, msg);
         get().addMessage(msg);
-        set({loading: false});
+        set({ loading: false });
 
         switch(msg.type) {
           case "user_data": 
+            console.log("[CLIENT] Updating user data for:", msg.content.user_id);
             set((state) => ({
               users: { ...state.users, [msg.content.user_id]: msg.content }
             }));
             break;
+            
           case "pick_game":
-            set({screen: 2})
+            console.log("[CLIENT] Game selection screen");
+            set({ screen: 2 });
             break;
+            
           case "game_selected":
-            set({screen: 3, game: msg.content.game});
+            console.log("[CLIENT] Starting game:", msg.content.game);
+            set({ screen: 3, game: msg.content.game });
             break;
+            
           default: 
-            switch(get().game) {
-              case "desen": desenStore.getState().handleMessage(matchData); break;
-              case "dannegru": dannegruStore.getState().handleMessage(matchData); break;
+            // Forward to game-specific handlers
+            const currentGame = get().game;
+            if (currentGame === "desen") {
+              desenStore.getState().handleMessage(matchData);
+            } else if (currentGame === "dannegru") {
+              dannegruStore.getState().handleMessage(matchData);
             }
             break;
         }
@@ -92,22 +107,30 @@ export const usePlayerStore = create((set, get) => ({
 
   // 📤 Send message
   send: (payload) => {
-    const socket = get().socket;
-    const matchId = get().matchId;
-    if (!socket || !matchId) return;
+    const { socket, matchId } = get();
+    if (!socket || !matchId) {
+      console.warn("[CLIENT] Cannot send message: socket or matchId missing");
+      return;
+    }
 
-    console.log("📩 Sent:", payload)
+    console.log("📤 [CLIENT] Sending message:", payload.type, payload);
     const data = new TextEncoder().encode(JSON.stringify(payload));
-    set({loading: true});
+    set({ loading: true });
     socket.sendMatchState(matchId, 1, data);
   },
 
   // 🎮 Join room
   joinRoom: async (name) => {
     const { client, session, socket, roomCode } = get();
-    if (!client || !session || !socket) return;
+    
+    if (!client || !session || !socket) {
+      console.error("[CLIENT] Cannot join room: missing client/session/socket");
+      return;
+    }
 
     try {
+      console.log(`[CLIENT] Joining room with code: ${roomCode}`);
+      
       const rpc = await client.rpc(session, "join_custom_match", {
         room_code: roomCode
       });
@@ -115,8 +138,12 @@ export const usePlayerStore = create((set, get) => ({
       const match = await socket.joinMatch(rpc.payload.match_id);
 
       if (match.match_id) {
-        console.log("ha?!");
+        console.log(`[CLIENT] Successfully joined match: ${match.match_id}`);
+        set({ matchId: match.match_id, screen: 1, loading: false });
+        
+        // Send user data after a short delay to ensure connection is stable
         setTimeout(() => {
+          console.log("[CLIENT] Sending user data to host");
           get().send({
             type: "user_data",
             content: {
@@ -124,18 +151,12 @@ export const usePlayerStore = create((set, get) => ({
               nickname: name,
             }
           });
-          set({loading: false})
-          
-        }, 1000);
-      
-        set({ matchId: match.match_id, screen: 1, loading: false });
-      
+        }, 500);
       }
-      
 
       return match.match_id;
     } catch (err) {
-      console.error(err);
+      console.error("[CLIENT] Failed to join room:", err);
       throw err;
     }
   }

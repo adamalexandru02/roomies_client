@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { ReactSketchCanvas } from "react-sketch-canvas";
-
+import { useEffect, useState } from "react";
 import { usePlayerStore } from "./store/playerStore";
 import "./App.css";
 import Desen from "./games/Desen/Desen";
@@ -15,12 +13,10 @@ const App = () => {
     game
   } = usePlayerStore();
 
-  
-
-  // connect once (react 17+ trigaruieste efectele de 2 ori...)
+  // Connect once on mount (React 18+ runs effects twice in dev mode)
   useEffect(() => {
     initConnection();
-  }, []);
+  }, [initConnection]);
 
   if(loading && screen !== 3) {
     return (
@@ -45,48 +41,23 @@ const App = () => {
   );
 };
 
-const CustomizedCanvas = ({ canvasRef }) => {
-  const [dimensions] = useState({
-    width: window.innerWidth - 40,
-    height: window.innerHeight - 400
-  });
-
-  const undo = () => {
-    canvasRef.current?.undo();
-  }
-
-  return (
-    <div className="canvas">
-      <div className="undo" onClick={() => undo()}></div>
-      <ReactSketchCanvas ref={canvasRef}
-                          strokeWidth={5}
-                          width={dimensions.width + "px"}
-                          height={dimensions.height + "px"}
-                          strokeColor="black" />
-    </div>
-    
-  )
-};
-
 const Connect = () => {
-  const { joinRoom, setScreen, setLoading } = usePlayerStore();
+  const { joinRoom, setRoomCode } = usePlayerStore();
   const [name, setName] = useState("");
   const [error, setError] = useState("");
 
   const handleJoin = async () => {
+    if (!name.trim()) {
+      setError("Cum vrei sa te strigam?!");
+      return;
+    }
+    
     try {
       await joinRoom(name);
-    } catch {
+    } catch (err) {
+      console.error("Failed to join room:", err);
       setError("Nu am gasit nicio camera cu codul asta...");
     }
-  };
-  const {
-    setRoomCode,
-  } = usePlayerStore();
-
-  const checkAndSave = () => {
-    if (!name) return setMsg("Cum vrei sa te strigam?!");
-    handleJoin();
   }
   return (
     <>
@@ -95,16 +66,18 @@ const Connect = () => {
         <h1>Conecteaza-te</h1>
         <input
           autoComplete="off"
-          type={'number'}
+          type="number"
           onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
           placeholder="Cod camera:"
           maxLength={6}
         />
         <input
           placeholder="Numele tau:"
+          value={name}
           onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
         />
-        <div className="main-button" onClick={() => checkAndSave()}>Alatura-te</div>
+        <div className="main-button" onClick={handleJoin}>Alatura-te</div>
         {error && <p>{error}</p>}
       </div>
     </>
@@ -115,16 +88,17 @@ const Connect = () => {
 
 const Waiting = () => {
   const { send, users } = usePlayerStore();
-  const [error, setError ] = useState("")
+  const [error, setError] = useState("");
 
   const everyoneIn = () => {
-    // if (users.length > 2) {
-      send({
-        type: "pick_game",
-      });
-    // }  else {
-    //   setError("Acest joc se joaca in minim 3 jucatori")
-    // }
+    const MIN_PLAYERS = 3;
+    if (Object.keys(users).length < MIN_PLAYERS) {
+      setError(`Acest joc se joaca in minim ${MIN_PLAYERS} jucatori`);
+      return;
+    }
+    
+    console.log("All players ready, requesting game selection");
+    send({ type: "pick_game" });
   };
 
   return (
