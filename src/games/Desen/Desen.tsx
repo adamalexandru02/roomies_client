@@ -28,26 +28,19 @@ const Desen = () => {
   if(loading) {
     return (<p>Loading...</p>)
   }
-  switch (screen) {
-    case 0:
-    return <DrawTitle/>;
-    case 1:
-      return <WaitingForOthers/>;
-    case 2:
-      return <PickTitle />;
-    case 3:
-      return <WaitingForOthersTwo/>;
-    case 4:
-      return <VoteTitle />;
-    case 5:
-      return <WaitingForOthersTwo/>;
-    case 6: 
-      return <Score />;
-    case 7: 
-      return <Restart />;
-    default:
-      return null;
-  }
+  return (
+    <div className="desen">
+      {screen === -1 && <Start />}
+      {screen === 0 && <DrawTitle />}
+      {screen === 1 && <WaitingForOthers />}
+      {screen === 2 && <PickTitle />}
+      {screen === 3 && <WaitingForOthersTwo />}
+      {screen === 4 && <VoteTitle />}
+      {screen === 5 && <WaitingForOthersTwo />}
+      {screen === 6 && <Score />}
+      {screen === 7 && <Restart />}
+    </div>
+  );
 };
 
 const CustomizedCanvas = ({ canvasRef }) => {
@@ -73,13 +66,21 @@ const CustomizedCanvas = ({ canvasRef }) => {
   )
 };
 
+const Start = ({ }) => {
+  return(
+    <div className="card">
+      <h1>Sa Desenam</h1>
+      <p>Trebuie sa ghicesti ce a vrut sa deseneze cel de langa tine...</p>      
+    </div>
+  )
+}
 
 const DrawTitle = ({ }) => {
   const canvasRef = useRef(null);
   const [msg, setMsg] = useState("");
 
   // 🚀 Listen for round_over event in case you didn't upload your avatar
-  const {assignedTitle, roundOverTrigger, setScreen} = useGameStore();
+  const { assignedTitle, roundOverTrigger, setScreen } = useGameStore();
   const { client, send, session } = usePlayerStore();
 
   // When round_over is received from the host → send drawing

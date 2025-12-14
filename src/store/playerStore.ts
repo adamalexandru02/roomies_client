@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import * as Nakama from "@heroiclabs/nakama-js";
 
-import { gameStore } from "../games/Desen/store/gameStore";
+import { gameStore as desenStore } from '../games/Desen/store/gameStore';
+import { gameStore as dannegruStore } from '../games/Dannegru/store/gameStore';
 
 export const usePlayerStore = create((set, get) => ({
   client: null,
@@ -66,7 +67,15 @@ export const usePlayerStore = create((set, get) => ({
           case "pick_game":
             set({screen: 2})
             break;
-          default: console.log("nu exista", matchData); gameStore.getState().handleMessage(matchData); break;
+          case "game_selected":
+            set({screen: 3, game: msg.content.game});
+            break;
+          default: 
+            switch(get().game) {
+              case "desen": desenStore.getState().handleMessage(matchData); break;
+              case "dannegru": dannegruStore.getState().handleMessage(matchData); break;
+            }
+            break;
         }
 
       } catch (err) {

@@ -6,7 +6,7 @@ export const useGameStore = create((set, get) => ({
 
   assignedTitle: "",
   roundOverTrigger: 0,
-  screen: 0,
+  screen: -1,
   owner: null,
   drawingTitles: [],
   loading: false,
@@ -18,7 +18,7 @@ export const useGameStore = create((set, get) => ({
   setAssignedTitle: (title) => set({ assignedTitle: title }),
 
   handleMessage (matchData) {
-    const {session, setScreen: setPlayerScreen} = playerStore.getState();
+    const { session } = playerStore.getState();
     const json = new TextDecoder().decode(matchData.data);
     const msg = JSON.parse(json);
 
@@ -38,7 +38,6 @@ export const useGameStore = create((set, get) => ({
           drawingTitles: [],
           loading: false,
         });
-        setPlayerScreen(3);
         break;
       case "time_over":
         set({ roundOverTrigger: get().roundOverTrigger + 1 });

@@ -17,7 +17,7 @@
   }
 }
 
-.desen {
+.dannegru {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -30,40 +30,37 @@
 }
 
 
-.desen h1 {
+.dannegru h1 {
   font-size: 48px;
   font-family: "SingleDay"!important;
 
 }
 
-.desen h2 {
+.dannegru h2 {
   font-size: 26px;
   font-family: "SingleDay"!important;
 }
 
-.desen p {
+.dannegru p {
   font-size: 24px;
   font-family: "SingleDay"!important;
 
 }
 
-.desen input {
+.dannegru input {
   display: flex;
   padding: 10px;
   box-shadow: none;
-  border-image-source: url('assets/sketch_borders.png');
-  border-image-slice: 60;
-  border-image-width: 10px;
-  border-image-outset: 0;
+  border: 3 px solid #d8d8d8;
   background: transparent
 }
 
 
 /* <remove_browser_behaviour> */
-.desen input,
-.desen textarea,
-.desen select,
-.desen button {
+.dannegru input,
+.dannegru textarea,
+.dannegru select,
+.dannegru button {
     color: #000;
   font-family: 'SingleDay';
   font-size: 24px; /* prevents Safari zoom */
@@ -91,58 +88,29 @@ input[type=number] {
 /* </remove_browser_behaviour> */
 
 
-.desen .card {
+.dannegru .card {
   display: flex;
   flex-direction: column;
   padding: 40px;
   width: calc(100vw - 100px);
-  border-image-source: url('assets/sketch_border2.png');
-  border-image-slice: 45;        /* how much to slice inward from each edge */
-  border-image-width: 15px;      /* thickness of the border */
-  border-image-outset: 0;        /* optional offset */
-  border-image-repeat: stretch;  /* or round, repeat, space */
-  animation: skewit 2s ease-in infinite;
 }
 
-.desen .card .button {
+.dannegru .card .button {
   width: calc(100% - 20px);
 }
 
-.desen .button {
+.dannegru .button {
   cursor: pointer;
   display: flex;
   padding: 10px;
   width: calc(100% - 60px);
-  border-image-source: url('assets/sketch_borders.png');
-  border-image-slice: 60;
-  border-image-width: 10px;
-  border-image-outset: 0;
   font-size: 32px;
   justify-content: center;
-  border-image-repeat: stretch;
-  animation: skewit 2s ease-in infinite;
 }
 
-.desen .button:hover {
-  animation: skewit 0.5s ease-in infinite;
+.dannegru .button:hover {
   transform: scale(1.2);
-
 }
-.desen .read-the-docs {
+.dannegru .read-the-docs {
   color: #888;
-}
-
-.desen .canvas {
-  position: relative;
-}
-.desen .undo {
-  background-image: url('assets/undo.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center center;
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  top: 0;
-  right: 0;
 }

@@ -4,6 +4,7 @@ import { ReactSketchCanvas } from "react-sketch-canvas";
 import { usePlayerStore } from "./store/playerStore";
 import "./App.css";
 import Desen from "./games/Desen/Desen";
+import Dannegru from "./games/Dannegru/Dannegru";
 import Header from "./components/Header";
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
     initConnection,
     screen,
     loading,
+    game
   } = usePlayerStore();
 
   
@@ -34,7 +36,10 @@ const App = () => {
       {screen === 0  && <Connect />}
       {screen === 1 && <Waiting />}
       {screen === 2 && <PickingGame />}
-      {screen === 3 && <Game />}
+      {screen === 3 && <Game>
+          {game === "desen" && <Desen/>}
+          {game === "dannegru" && <Dannegru />}
+        </Game>}
   
     </>
   );
@@ -146,13 +151,13 @@ const PickingGame = () => {
   )
 }
 
-const Game = () => {
+const Game = ({ children }) => {
   return (
     <div className="game">
-      <Desen />
+      {children}
     </div>
-  )
-}
+  );
+};
 
 
 export default App;
