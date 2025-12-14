@@ -16,6 +16,8 @@ export const usePlayerStore = create((set, get) => ({
   screen: 0,
   loading: false,
   game: null,
+  hostDisconnected: false,
+  hostDisconnectMessage: null,
   
   // Game state
   messages: [],
@@ -26,8 +28,12 @@ export const usePlayerStore = create((set, get) => ({
   drawingTitles: [],
 
 
-  setScreen: (step) => set({screen: step, loading: false}),
+  setScreen: (step) => set({ screen: step, loading: false }),
   setRoomCode: (code) => set({ roomCode: "1111" }),
+  setHostDisconnected: (disconnected, message = null) => set({ 
+    hostDisconnected: disconnected, 
+    hostDisconnectMessage: message 
+  }),
 
   addMessage: (msg) =>
     set((state) => ({ messages: [...state.messages, msg] })),
@@ -80,6 +86,35 @@ export const usePlayerStore = create((set, get) => ({
           case "game_selected":
             console.log("[CLIENT] Starting game:", msg.content.game);
             set({ screen: 3, game: msg.content.game });
+            break;
+            
+          case "host_disconnected":
+            console.warn("[CLIENT] Host disconnected! Waiting for reconnection...");
+            set({ 
+              hostDisconnected: true,
+              hostDisconnectMessage: `Host s-a deconectat. Așteptăm ${msg.content.grace_period_seconds}s pentru reconectare...`,
+              loading: true 
+            });
+            break;
+            
+          case "host_reconnected":
+            console.log("[CLIENT] Host reconnected! Resuming game...");
+            set({ 
+              hostDisconnected: false,
+              hostDisconnectMessage: null,
+              loading: false 
+            });
+            break;
+            
+          case "host_timeout":
+            console.error("[CLIENT] Host did not reconnect. Returning to lobby.");
+            set({ 
+              hostDisconnected: false,
+              hostDisconnectMessage: null,
+              screen: 0,
+              game: null,
+              loading: false 
+            });
             break;
             
           default: 

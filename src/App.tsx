@@ -10,7 +10,9 @@ const App = () => {
     initConnection,
     screen,
     loading,
-    game
+    game,
+    hostDisconnected,
+    hostDisconnectMessage
   } = usePlayerStore();
 
   // Connect once on mount (React 18+ runs effects twice in dev mode)
@@ -18,7 +20,7 @@ const App = () => {
     initConnection();
   }, [initConnection]);
 
-  if(loading && screen !== 3) {
+  if(loading && screen !== 3 && !hostDisconnected) {
     return (
       <>
         <Header/>
@@ -26,9 +28,11 @@ const App = () => {
       </>
     )
   }
+  
   return (
     <>
       <Header/>
+      {hostDisconnected && <HostDisconnectedOverlay message={hostDisconnectMessage} />}
       {screen === 0  && <Connect />}
       {screen === 1 && <Waiting />}
       {screen === 2 && <PickingGame />}
@@ -38,6 +42,33 @@ const App = () => {
         </Game>}
   
     </>
+  );
+};
+
+const HostDisconnectedOverlay = ({ message }) => {
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 9999,
+      color: 'white',
+      padding: '20px'
+    }}>
+      <div className="logo" style={{ marginBottom: '20px' }}></div>
+      <h2>⚠️ Host Deconectat</h2>
+      <p>{message || "Așteptăm să se reconecteze..."}</p>
+      <div style={{ marginTop: '20px' }}>
+        <div className="loading-spinner">●●●</div>
+      </div>
+    </div>
   );
 };
 
