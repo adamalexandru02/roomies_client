@@ -46,7 +46,7 @@ export const usePlayerStore = create((set, get) => ({
 
     const client = new Nakama.Client(
       "jocuri-server-parola",
-      "192.168.1.113",
+      "192.168.1.134",
       "7350",
       false
     );
